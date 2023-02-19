@@ -1,7 +1,6 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include <limits.h>
 
 /** Error code used for when an overflow or underflow occurs */
 #define ERR_OVERFLOW 0x01
@@ -9,6 +8,22 @@
 #define ERR_DIVIDE_BY_ZERO 0x20
 /** Error code used for when a negative exponent is passed */
 #define ERR_NEGATIVE_EXPONENT 0x21
+/** Error code used for when a negative bitshift factor is passed */
+#define ERR_NEGATIVE_BITSHIFT 0x22
+
+
+
+
+
+// // // PLAIN ARITHMETIC FUNCTIONS // // //
+
+
+
+
+
+long negative_int(long n) {
+    return ~n + 1;  // return the negative counterpart of the integer
+}
 
 long plus_ints(long a, long b) {
     long res = a + b;               // compute the sum of the two integer arguments
@@ -59,12 +74,24 @@ long divide_ints(long a, long b) {
         exit(ERR_DIVIDE_BY_ZERO);
     
     long res = a / b;   // compute the quotient of the two integer elements
+    long rem = a % b;   // compute the remainder/carry of the two integer elements
 
-    // if the result multiplied by one factor does not equal the other factor, an overflow has occured
-    if (a != 0 && a != res * b)
+    // if the result multiplied by one factor does not equal the other factor, an overflow 
+    // has occured
+    if (a != 0 && a != ((res * b) + rem))
         exit(ERR_OVERFLOW);
 
     return res; // return the quotient of the two integers
+}
+
+long modulo_ints(long a, long b) {
+    // division by zero prohibited
+    if (b == 0)
+        exit(ERR_DIVIDE_BY_ZERO);
+
+    divide_ints(a, b);  // utilize the division function to check for overflow
+
+    return a % b; // return the remainder/carry of the two integers
 }
 
 long exponent_ints(long a, long b) {
@@ -77,4 +104,46 @@ long exponent_ints(long a, long b) {
         res = times_ints(res, a);   // utilize the overflow checks in the multiplication function
 
     return res; // return the exponentiation of the two integers
+}
+
+
+
+
+
+// // // BITWISE ARITHMETIC FUNCTIONS // // //
+
+
+
+
+
+long shift_left_ints(long a, long b) {
+    // negative shift factors prohibited
+    if (b < 0)
+        exit(ERR_NEGATIVE_BITSHIFT);
+
+    return a << b;  // return the first integer left-shifted the factor of the second integer
+}
+
+long shift_right_ints(long a, long b) {
+    // negative shift factors prohibited
+    if (b < 0)
+        exit(ERR_NEGATIVE_BITSHIFT);
+
+    return a >> b;  // return the first integer right-shifted the factor of the second integer
+}
+
+long not_int(long n) {
+    return ~n;  // return the integer with all bits flipped
+}
+
+long and_ints(long a, long b) {
+    return a & b;   // return the bitwise-and of the two integers
+}
+
+long or_ints(long a, long b) {
+    return a | b;   // return the bitwise-or of the two integers
+}
+
+long eor_ints(long a, long b) {
+    return a ^ b;   // return the bitwise-exclusive-or of the two integers
 }
