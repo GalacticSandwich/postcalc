@@ -1,6 +1,7 @@
 /**
     @file pcalc-opers.c
     @author GalacticSandwich
+    
     This file provides the functions needed to perform mathematical operations, along with checking for
     correct mathematical style, and any associated overflow which may occur. There is currently support
     for eleven different numerical operations, 5 for basic arithmetic, and 6 for bitwise arithmetic.

@@ -1,6 +1,7 @@
 /**
     @file pcalc-io.c
     @author GalacticSandwich
+    
     This file provides special functions needed to handle custom input/output functionality from a specified
     stream, in the main program this is stdin by default, but can be directed towards a file input of some
     kind.

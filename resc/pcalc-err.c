@@ -1,6 +1,7 @@
 /**
     @file pcalc-err.c
     @author GalacticSandwich
+    
     This file contains functions for dealing with specialized error handling, where in any errors that are
     encountered are delegated to error output (stderr automatically, but can be changed), and the program
     is exited passing whatever exit code is provided.
@@ -29,11 +30,25 @@
     @param code the exit code to generate an error message for
 */
 static void error_message(const unsigned code) {
-
+    switch(code) {
+        case ERR_OVERFLOW:
+            fprintf(OUTPUT_ERR, "[EXIT 0x01] OVERFLOW");
+            break;
+        case ERR_DIVIDE_BY_ZERO:
+            fprintf(OUTPUT_ERR, "[EXIT 0x20] DIVISION BY ZERO ATTEMPTED");
+            break;
+        case ERR_NEGATIVE_EXPONENT:
+            fprintf(OUTPUT_ERR, "[EXIT 0x21] NEGATIVE EXPONENT PASSED");
+            break;
+        case ERR_NEGATIVE_BITSHIFT:
+            fprintf(OUTPUT_ERR, "[EXIT 0x22] NEGATIVE BITSHIFT FACTOR PASSED");
+            break;
+        default:
+            break;
+    }
 }
 
 void escape(const unsigned code) {
-    // add error code output here later
-
-    exit(code); // exit the program with the desired exit code
+    error_message(code);    // generate the error message associated with the code passed
+    exit(code);             // exit the program with the desired exit code
 }
