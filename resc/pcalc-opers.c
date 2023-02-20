@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "pcalc-err.h"
+
 /** Error code used for when an overflow or underflow occurs */
 #define ERR_OVERFLOW 0x01
 /** Error code used for an attempted division by zero */
@@ -41,10 +43,10 @@ long plus_longs(long a, long b) {
 
     // if both numbers are positive, and produce a negative result, an overflow has occured
     if (both_pos && res < 0)
-        exit(ERR_OVERFLOW);
+        escape(ERR_OVERFLOW);
     // if both numbers are negative, and produce a positive result, an overflow has occured
     if (both_neg && res > 0)
-        exit(ERR_OVERFLOW);
+        escape(ERR_OVERFLOW);
     
     return res; // return the sum of the two integers
 }
@@ -57,10 +59,10 @@ long minus_longs(long a, long b) {
 
     // if both numbers are positive, and produce a positive result, an overflow has occured
     if (both_pos && res > 0)
-        exit(ERR_OVERFLOW);
+        escape(ERR_OVERFLOW);
     // if both numbers are negative, and produce a negative result, an overflow has occured
     if (both_neg && res < 0)
-        exit(ERR_OVERFLOW);
+        escape(ERR_OVERFLOW);
     
     return res; // return the difference of the two integers
 }
@@ -71,7 +73,7 @@ long times_longs(long a, long b) {
     
     // if the result divided by one factor does not equal the other factor, an overflow has occured
     if (!either_zero && a != res / b)
-        exit(ERR_OVERFLOW);
+        escape(ERR_OVERFLOW);
 
     return res; // return the product of the two integers
 }
@@ -79,7 +81,7 @@ long times_longs(long a, long b) {
 long divide_longs(long a, long b) {
     // division by zero prohibited
     if (b == 0)
-        exit(ERR_DIVIDE_BY_ZERO);
+        escape(ERR_DIVIDE_BY_ZERO);
     
     long res = a / b;   // compute the quotient of the two integer elements
     long rem = a % b;   // compute the remainder/carry of the two integer elements
@@ -87,7 +89,7 @@ long divide_longs(long a, long b) {
     // if the result multiplied by one factor does not equal the other factor, an overflow 
     // has occured
     if (a != 0 && a != ((res * b) + rem))
-        exit(ERR_OVERFLOW);
+        escape(ERR_OVERFLOW);
 
     return res; // return the quotient of the two integers
 }
@@ -95,7 +97,7 @@ long divide_longs(long a, long b) {
 long modulo_longs(long a, long b) {
     // division by zero prohibited
     if (b == 0)
-        exit(ERR_DIVIDE_BY_ZERO);
+        escape(ERR_DIVIDE_BY_ZERO);
 
     divide_longs(a, b);  // utilize the division function to check for overflow
 
@@ -105,7 +107,7 @@ long modulo_longs(long a, long b) {
 long exponent_longs(long a, long b) {
     // negative exponents prohibited
     if (b < 0)
-        exit(ERR_NEGATIVE_EXPONENT);
+        escape(ERR_NEGATIVE_EXPONENT);
     
     long res = 1;                   // initialize the value to be multiplied repeatedly
     for (long i = 0; i < b; i++)    // multiply the value by the base factor the times of the power value
@@ -127,7 +129,7 @@ long exponent_longs(long a, long b) {
 long shift_left_longs(long a, long b) {
     // negative shift factors prohibited
     if (b < 0)
-        exit(ERR_NEGATIVE_BITSHIFT);
+        escape(ERR_NEGATIVE_BITSHIFT);
 
     return a << b;  // return the first integer left-shifted the factor of the second integer
 }
@@ -135,7 +137,7 @@ long shift_left_longs(long a, long b) {
 long shift_right_longs(long a, long b) {
     // negative shift factors prohibited
     if (b < 0)
-        exit(ERR_NEGATIVE_BITSHIFT);
+        escape(ERR_NEGATIVE_BITSHIFT);
 
     return a >> b;  // return the first integer right-shifted the factor of the second integer
 }
