@@ -1,14 +1,23 @@
+/**
+    @file pcalc-io.c
+    @author GalacticSandwich
+    This file provides special functions needed to handle custom input/output functionality from a specified
+    stream, in the main program this is stdin by default, but can be directed towards a file input of some
+    kind.
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
-static bool is_whitespace(int ch) {
+bool is_whitespace(int ch) {
+    // check to see if the character passed is a specified whitespace character
+    // the newline character "\n" is used to separate sets of operations, so it is not taken into account
     switch (ch) {
-        case ' ':
-        case '\t':
-        case '\v':
-        case '\r':
+        case ' ':   // space
+        case '\t':  // horizontal tab
+        case '\v':  // vertical tab
+        case '\r':  // carriage return
             return true;
         default:
             return false;

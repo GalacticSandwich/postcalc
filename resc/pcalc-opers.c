@@ -1,3 +1,11 @@
+/**
+    @file pcalc-opers.c
+    @author GalacticSandwich
+    This file provides the functions needed to perform mathematical operations, along with checking for
+    correct mathematical style, and any associated overflow which may occur. There is currently support
+    for eleven different numerical operations, 5 for basic arithmetic, and 6 for bitwise arithmetic.
+    Error codes used by these functions are specified among the constants below.
+*/
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -21,11 +29,11 @@
 
 
 
-long negative_int(long n) {
+long negative_long(long n) {
     return ~n + 1;  // return the negative counterpart of the integer
 }
 
-long plus_ints(long a, long b) {
+long plus_longs(long a, long b) {
     long res = a + b;               // compute the sum of the two integer arguments
 
     bool both_pos = a > 0 && b > 0; // check to see if both numbers are positive
@@ -41,7 +49,7 @@ long plus_ints(long a, long b) {
     return res; // return the sum of the two integers
 }
 
-long minus_ints(long a, long b) {
+long minus_longs(long a, long b) {
     long res = a - b;               // compute the difference of the two integer arguments
 
     bool both_pos = a > 0 && b > 0; // check to see if both numbers are positive
@@ -57,7 +65,7 @@ long minus_ints(long a, long b) {
     return res; // return the difference of the two integers
 }
 
-long times_ints(long a, long b) {
+long times_longs(long a, long b) {
     long res = a * b;                       // compute the product of the two integer arguments
     bool either_zero = a == 0 || b == 0;    // check to see if either factor is zero
     
@@ -68,7 +76,7 @@ long times_ints(long a, long b) {
     return res; // return the product of the two integers
 }
 
-long divide_ints(long a, long b) {
+long divide_longs(long a, long b) {
     // division by zero prohibited
     if (b == 0)
         exit(ERR_DIVIDE_BY_ZERO);
@@ -84,24 +92,24 @@ long divide_ints(long a, long b) {
     return res; // return the quotient of the two integers
 }
 
-long modulo_ints(long a, long b) {
+long modulo_longs(long a, long b) {
     // division by zero prohibited
     if (b == 0)
         exit(ERR_DIVIDE_BY_ZERO);
 
-    divide_ints(a, b);  // utilize the division function to check for overflow
+    divide_longs(a, b);  // utilize the division function to check for overflow
 
     return a % b; // return the remainder/carry of the two integers
 }
 
-long exponent_ints(long a, long b) {
+long exponent_longs(long a, long b) {
     // negative exponents prohibited
     if (b < 0)
         exit(ERR_NEGATIVE_EXPONENT);
     
     long res = 1;                   // initialize the value to be multiplied repeatedly
     for (long i = 0; i < b; i++)    // multiply the value by the base factor the times of the power value
-        res = times_ints(res, a);   // utilize the overflow checks in the multiplication function
+        res = times_longs(res, a);  // utilize the overflow checks in the multiplication function
 
     return res; // return the exponentiation of the two integers
 }
@@ -116,7 +124,7 @@ long exponent_ints(long a, long b) {
 
 
 
-long shift_left_ints(long a, long b) {
+long shift_left_longs(long a, long b) {
     // negative shift factors prohibited
     if (b < 0)
         exit(ERR_NEGATIVE_BITSHIFT);
@@ -124,7 +132,7 @@ long shift_left_ints(long a, long b) {
     return a << b;  // return the first integer left-shifted the factor of the second integer
 }
 
-long shift_right_ints(long a, long b) {
+long shift_right_longs(long a, long b) {
     // negative shift factors prohibited
     if (b < 0)
         exit(ERR_NEGATIVE_BITSHIFT);
@@ -132,18 +140,18 @@ long shift_right_ints(long a, long b) {
     return a >> b;  // return the first integer right-shifted the factor of the second integer
 }
 
-long not_int(long n) {
+long not_long(long n) {
     return ~n;  // return the integer with all bits flipped
 }
 
-long and_ints(long a, long b) {
+long and_longs(long a, long b) {
     return a & b;   // return the bitwise-and of the two integers
 }
 
-long or_ints(long a, long b) {
+long or_longs(long a, long b) {
     return a | b;   // return the bitwise-or of the two integers
 }
 
-long eor_ints(long a, long b) {
+long eor_longs(long a, long b) {
     return a ^ b;   // return the bitwise-exclusive-or of the two integers
 }
