@@ -16,20 +16,20 @@
 // Error Codes
 
 /** Error code used for when an overflow or underflow occurs */
-#define ERR_OVERFLOW 0x01
+#define ERR_OVERFLOW 100
 /** Error code used for an attempted division by zero */
-#define ERR_DIVIDE_BY_ZERO 0x20
+#define ERR_DIVIDE_BY_ZERO 120
 /** Error code used for when a negative exponent is passed */
-#define ERR_NEGATIVE_EXPONENT 0x21
+#define ERR_NEGATIVE_EXPONENT 121
 /** Error code used for when a negative bitshift factor is passed */
-#define ERR_NEGATIVE_BITSHIFT 0x22
+#define ERR_NEGATIVE_BITSHIFT 122
 
 /**
     Helper function, delegates an error output to whatever error stream is specified, and outputs
     the proper error message for whatever exit code has been passed.
     @param code the exit code to generate an error message for
 */
-static void error_message(const unsigned code) {
+static void error_message(const int code) {
     switch(code) {
         case ERR_OVERFLOW:
             fprintf(OUTPUT_ERR, "[EXIT 0x01] OVERFLOW");
@@ -48,7 +48,7 @@ static void error_message(const unsigned code) {
     }
 }
 
-void escape(const unsigned code) {
+void escape(const int code) {
     error_message(code);    // generate the error message associated with the code passed
     exit(code);             // exit the program with the desired exit code
 }

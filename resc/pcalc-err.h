@@ -12,4 +12,4 @@
 
     @param code the exit code to pass
 */
-void escape(const unsigned code);
+void escape(const int code);
