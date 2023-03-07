@@ -6,16 +6,6 @@
     with checking for any overflow associated with each one.
 */
 
-
-
-
-
-// // // PLAIN ARITHMETIC FUNCTIONS // // //
-
-
-
-
-
 /**
     Computes the opposite, or negative, of a positive integer passed.
 
@@ -88,71 +78,3 @@ long modulo_longs(long a, long b);
 */
 long exponent_longs(long a, long b);
 
-
-
-
-
-// // // BITWISE ARITHMETIC FUNCTIONS // // //
-
-
-
-
-
-/**
-    Performs a left bitshift on a long signed integer, using another long signed integer as a shift factor.
-    If the shift factor is negative, the program exits with code 0x22 (ERR_NEGATIVE_BITSHIFT).
-
-    @param a the number to shift
-    @param b the factor to shift by
-    @return the number shifted to the left by the bit-factor
-*/
-long shift_left_longs(long a, long b);
-
-/**
-    Performs a right bitshift on a long signed integer, using another long signed integer as a shift factor.
-    If the shift factor is negative, the program exits with code 0x22 (ERR_NEGATIVE_BITSHIFT).
-
-    @param a the number to shift
-    @param b the factor to shift by
-    @return the number shifted to the right by the bit-factor
-*/
-long shift_right_longs(long a, long b);
-
-/**
-    Flips the bits of a long signed integer.
-
-    @param n the number to flip
-    @return the number with all its bits flipped
-*/
-long not_long(long n);
-
-/**
-    Performs a bitwise and operation on two long signed integers, where the bits of both numbers are compared
-    and zeroes are preserved in the result.
-
-    @param a the first number to compare
-    @param b the second number to compare
-    @return the bitwise-and of both numbers
-*/
-long and_longs(long a, long b);
-
-/**
-    Performs a bitwise or operation on two long signed integers, where the bits of both numbers are compared
-    and ones are preserved in the result.
-
-    @param a the first number to compare
-    @param b the second number to compare
-    @return the bitwise-or of both numbers
-*/
-long or_longs(long a, long b);
-
-/**
-    Performs a bitwise exclusive-or operation on two long signed integers, where the bits of both numbers 
-    are compared and ones in different digits, along with zeroes and ones in the same digit, are preserved 
-    in the result.
-
-    @param a the first number to compare
-    @param b the second number to compare
-    @return the bitwise-exclusive-or of both numbers
-*/
-long eor_longs(long a, long b);

@@ -22,16 +22,6 @@
 /** Error code used for when a negative bitshift factor is passed */
 #define ERR_NEGATIVE_BITSHIFT 122
 
-
-
-
-
-// // // PLAIN ARITHMETIC FUNCTIONS // // //
-
-
-
-
-
 long negative_long(long n) {
     return ~n + 1;  // return the negative counterpart of the integer
 }
@@ -118,43 +108,3 @@ long exponent_longs(long a, long b) {
 }
 
 
-
-
-
-// // // BITWISE ARITHMETIC FUNCTIONS // // //
-
-
-
-
-
-long shift_left_longs(long a, long b) {
-    // negative shift factors prohibited
-    if (b < 0)
-        escape(ERR_NEGATIVE_BITSHIFT);
-
-    return a << b;  // return the first integer left-shifted the factor of the second integer
-}
-
-long shift_right_longs(long a, long b) {
-    // negative shift factors prohibited
-    if (b < 0)
-        escape(ERR_NEGATIVE_BITSHIFT);
-
-    return a >> b;  // return the first integer right-shifted the factor of the second integer
-}
-
-long not_long(long n) {
-    return ~n;  // return the integer with all bits flipped
-}
-
-long and_longs(long a, long b) {
-    return a & b;   // return the bitwise-and of the two integers
-}
-
-long or_longs(long a, long b) {
-    return a | b;   // return the bitwise-or of the two integers
-}
-
-long eor_longs(long a, long b) {
-    return a ^ b;   // return the bitwise-exclusive-or of the two integers
-}

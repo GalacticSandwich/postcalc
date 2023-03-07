@@ -1,59 +1,111 @@
 
-#include <stdbool.h>
-
 #include "pcalc-err.h"
+#include "pcalc-opers.h"
+#include "pcalc-util.h"
 
 /** Error code used for when access is attempted when queue is empty */
 #define ERR_EMPTY_QUEUE 101
 /** Error code used for when queue capacity is reached */
 #define ERR_QUEUE_AT_CAPACITY 102
+/** Error code used for when too few arguments are on a queue for an operation type */
+#define ERR_TOO_FEW_QUEUE_ARGS 103
+/** Error code used for when too many arguments are on a queue for an operation type */
+#define ERR_TOO_MANY_QUEUE_ARGS 104
 
 /** The maximum capacity of a queue */
 #define QUEUE_CAP 16
 
 typedef struct {            // technically a circular array-based queue, doesn't really circle back
-    int head, tail, size;   // integer values for storing head and tail indeces, and the queue size
+    int head, tail;         // integer values for storing head and tail indeces
     long list[QUEUE_CAP];   // the array for storing queue values, in this case long signed integers
-} queue;
+} opqueue;
 
-void init_queue(queue* q) {
+void init_opqueue(opqueue *q) {
     q->head = 0;    // initialize the head index to 0
     q->tail = 0;    // initialize the tail index to 0
-    q->size = 0;    // initialize the size to 0
 }
 
-queue new_queue() {
-    queue q;        // declare a new queue
-    init_queue(&q); // initialize the queue values
-    return q;       // return the new queue
+queue new_opqueue() {
+    opqueue q;        // declare a new queue
+    init_opqueue(&q); // initialize the queue values
+    return q;         // return the new queue
 }
 
-void enqueue(queue* q, long val) {
+void enqueue(opqueue *q, long val) {
     // cannot enqueue more elements if the queue capacity is reached
     if (q->tail == QUEUE_CAP)
         escape(ERR_QUEUE_AT_CAPACITY);
 
     q->list[q->tail++] = val;   // set the value at the tail and increment the tail index
-    q->size++;                  // increment the queue size
 }
 
-long dequeue(queue* q) {
+long dequeue(opqueue *q) {
     // cannot dequeue elements if the queue is empty
-    if (q->size == 0)
+    if (!has_items(*q))
         escape(ERR_EMPTY_QUEUE);
 
-    q->size--;                  // decrement the queue size
     return q->list[q->head++];  // return the element at the head index, and increment the head index
 }
 
-long peek(queue q) {
+long peek(opqueue q) {
     // cannot peek an element if the queue is empty
-    if (q.size == 0)
+    if (!has_items(*q))
         escape(ERR_EMPTY_QUEUE);
 
     return q.list[q.front];     // return the element at the head index
 }
 
-bool is_empty(queue q) {
-    return q.size == 0;     // the queue is empty if it contains no items, i.e., the size is 0
+
+int has_items(opqueue q) {
+    return q.tail - q.head;    // returns the number of items left in the queue (tail index - head index)
+}
+
+void monadic_op(opqueue *q, long (*op)(long)) {
+    // cannot perform an operation if the queue is empty
+    if (!has_items(*q))
+        escape(ERR_EMPTY_QUEUE);
+    // cannot perform an operation if there are too many arguments on the queue
+    else if (has_items(*q) > 1)
+        escape(ERR_TOO_MANY_QUEUE_ARGS);
+
+    long n = dequeue(q);    // dequeue the sole operand
+
+    init_opqueue(q);        // reinitialize the queue to be empty again
+    enqueue(q, (op)(n));    // calculate the operation of the value, and enqueue the result
+}
+
+void dyadic_op(opqueue *q, long (*op)(long, long)) {
+    // cannot perform an operation if the queue is empty
+    if (!has_items(*q))
+        escape(ERR_EMPTY_QUEUE);
+    // cannot perform an operation if there are not enough arguments on the queue
+    else if (has_items(*q) == 1)
+        escape(ERR_TOO_FEW_QUEUE_ARGS);
+    // cannot perform an operation if there are too many arguments on the queue
+    else if (has_items(*q) > 2)
+        escape(ERR_TOO_MANY_QUEUE_ARGS);
+
+    long a = dequeue(q);    // dequeue the first operand
+    long b = dequeue(q);    // dequeue the second operand
+
+    init_opqueue(q);        // reinitialize the queue to be empty again
+    enqueue(q, (op)(a, b)); // calculate the operation of both values, and enqueue the result
+}
+
+void polyadic_op(opqueue *q, long (*op)(long, long)) {
+    // cannot perform an operation if the queue is empty
+    if (!has_items(*q))
+        escape(ERR_EMPTY_QUEUE);
+    // cannot perform an operation if there are not enough arguments on the queue
+    else if (has_items(*q) == 1)
+        escape(ERR_TOO_FEW_QUEUE_ARGS);
+
+    long val = dequeue(q);   // initialize the value to operate on by dequeueing the first operand
+
+    // while the queue still has items, keep dequeueing them and changing the value
+    while (has_items(*q))
+        val = (op)(val, dequeue(q));
+
+    init_opqueue(q);    // reinitialize the queue to be empty again
+    enqueue(q, val);    // enqueue the newly-calculated value
 }
