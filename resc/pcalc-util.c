@@ -12,23 +12,15 @@
 /** Error code used for when too many arguments are on a queue for an operation type */
 #define ERR_TOO_MANY_QUEUE_ARGS 104
 
-/** The maximum capacity of a queue */
-#define QUEUE_CAP 16
-
-typedef struct {            // technically a circular array-based queue, doesn't really circle back
-    int head, tail;         // integer values for storing head and tail indeces
-    long list[QUEUE_CAP];   // the array for storing queue values, in this case long signed integers
-} opqueue;
-
 void init_opqueue(opqueue *q) {
     q->head = 0;    // initialize the head index to 0
     q->tail = 0;    // initialize the tail index to 0
 }
 
-queue new_opqueue() {
-    opqueue q;        // declare a new queue
-    init_opqueue(&q); // initialize the queue values
-    return q;         // return the new queue
+opqueue new_opqueue() {
+    opqueue nq;        // declare a new queue
+    init_opqueue(&nq); // initialize the queue values
+    return nq;         // return the new queue
 }
 
 void enqueue(opqueue *q, long val) {
@@ -41,31 +33,30 @@ void enqueue(opqueue *q, long val) {
 
 long dequeue(opqueue *q) {
     // cannot dequeue elements if the queue is empty
-    if (!has_items(*q))
+    if (!has_items(q))
         escape(ERR_EMPTY_QUEUE);
 
     return q->list[q->head++];  // return the element at the head index, and increment the head index
 }
 
-long peek(opqueue q) {
-    // cannot peek an element if the queue is empty
-    if (!has_items(*q))
+long peek(opqueue *q) {
+    // cannot peek at an element if the queue is empty
+    if (!has_items(q))
         escape(ERR_EMPTY_QUEUE);
 
-    return q.list[q.front];     // return the element at the head index
+    return q->list[q->head];     // return the element at the head index
 }
 
-
-int has_items(opqueue q) {
-    return q.tail - q.head;    // returns the number of items left in the queue (tail index - head index)
+int has_items(opqueue *q) {
+    return q->tail - q->head;    // returns the number of items left in the queue (tail index - head index)
 }
 
 void monadic_op(opqueue *q, long (*op)(long)) {
     // cannot perform an operation if the queue is empty
-    if (!has_items(*q))
+    if (!has_items(q))
         escape(ERR_EMPTY_QUEUE);
     // cannot perform an operation if there are too many arguments on the queue
-    else if (has_items(*q) > 1)
+    else if (has_items(q) > 1)
         escape(ERR_TOO_MANY_QUEUE_ARGS);
 
     long n = dequeue(q);    // dequeue the sole operand
@@ -76,13 +67,13 @@ void monadic_op(opqueue *q, long (*op)(long)) {
 
 void dyadic_op(opqueue *q, long (*op)(long, long)) {
     // cannot perform an operation if the queue is empty
-    if (!has_items(*q))
+    if (!has_items(q))
         escape(ERR_EMPTY_QUEUE);
     // cannot perform an operation if there are not enough arguments on the queue
-    else if (has_items(*q) == 1)
+    else if (has_items(q) == 1)
         escape(ERR_TOO_FEW_QUEUE_ARGS);
     // cannot perform an operation if there are too many arguments on the queue
-    else if (has_items(*q) > 2)
+    else if (has_items(q) > 2)
         escape(ERR_TOO_MANY_QUEUE_ARGS);
 
     long a = dequeue(q);    // dequeue the first operand
@@ -94,16 +85,16 @@ void dyadic_op(opqueue *q, long (*op)(long, long)) {
 
 void polyadic_op(opqueue *q, long (*op)(long, long)) {
     // cannot perform an operation if the queue is empty
-    if (!has_items(*q))
+    if (!has_items(q))
         escape(ERR_EMPTY_QUEUE);
     // cannot perform an operation if there are not enough arguments on the queue
-    else if (has_items(*q) == 1)
+    else if (has_items(q) == 1)
         escape(ERR_TOO_FEW_QUEUE_ARGS);
 
     long val = dequeue(q);   // initialize the value to operate on by dequeueing the first operand
 
     // while the queue still has items, keep dequeueing them and changing the value
-    while (has_items(*q))
+    while (has_items(q))
         val = (op)(val, dequeue(q));
 
     init_opqueue(q);    // reinitialize the queue to be empty again
